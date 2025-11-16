@@ -1,16 +1,19 @@
-const { Doctor } = require("../models/Doctor");
+import Doctor from "../models/Doctor.js";
 
-// Create a new doctor
-const createDoctor = async (req, res) => {
+// Create new doctor
+export const createDoctor = async (req, res) => {
   try {
-    const { name, email, phone, specialty, departmentId } = req.body;
+    const { name, email, password, specialization, phone, yearsOfExperience, clinicAddress, availableTimings } = req.body;
 
     const doctor = await Doctor.create({
       name,
       email,
+      password,
+      specialization,
       phone,
-      specialty,
-      departmentId,
+      yearsOfExperience,
+      clinicAddress,
+      availableTimings,
     });
 
     return res.status(201).json({
@@ -20,31 +23,25 @@ const createDoctor = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to create doctor",
-    });
+    return res.status(500).json({ success: false, message: "Failed to create doctor" });
   }
 };
 
 // Get all doctors
-const getDoctors = async (req, res) => {
+export const getDoctors = async (req, res) => {
   try {
-    const doctors = await Doctor.find().populate("departmentId", "name description");
+    const doctors = await Doctor.find();
     return res.status(200).json({ success: true, doctors });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch doctors",
-    });
+    return res.status(500).json({ success: false, message: "Failed to fetch doctors" });
   }
 };
 
-// Get a single doctor by ID
-const getDoctorById = async (req, res) => {
+// Get single doctor
+export const getDoctorById = async (req, res) => {
   try {
-    const doctor = await Doctor.findById(req.params.id).populate("departmentId", "name description");
+    const doctor = await Doctor.findById(req.params.id);
 
     if (!doctor) {
       return res.status(404).json({ success: false, message: "Doctor not found" });
@@ -53,15 +50,12 @@ const getDoctorById = async (req, res) => {
     return res.status(200).json({ success: true, doctor });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch doctor",
-    });
+    return res.status(500).json({ success: false, message: "Failed to fetch doctor" });
   }
 };
 
-// Update a doctor
-const updateDoctor = async (req, res) => {
+// Update doctor
+export const updateDoctor = async (req, res) => {
   try {
     const updatedDoctor = await Doctor.findByIdAndUpdate(req.params.id, req.body, { new: true });
 
@@ -76,15 +70,12 @@ const updateDoctor = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to update doctor",
-    });
+    return res.status(500).json({ success: false, message: "Failed to update doctor" });
   }
 };
 
-// Delete a doctor
-const deleteDoctor = async (req, res) => {
+// Delete doctor
+export const deleteDoctor = async (req, res) => {
   try {
     const deletedDoctor = await Doctor.findByIdAndDelete(req.params.id);
 
@@ -98,17 +89,6 @@ const deleteDoctor = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to delete doctor",
-    });
+    return res.status(500).json({ success: false, message: "Failed to delete doctor" });
   }
-};
-
-module.exports = {
-  createDoctor,
-  getDoctors,
-  getDoctorById,
-  updateDoctor,
-  deleteDoctor,
 };

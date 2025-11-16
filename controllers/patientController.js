@@ -1,12 +1,14 @@
-const { Patient } = require("../models/Patient");
+import Patient from "../models/Patient.js";
 
 // Create new patient
-const createPatient = async (req, res) => {
+export const createPatient = async (req, res) => {
   try {
-    const { name, age, gender, phone, address, medicalHistory } = req.body;
+    const { name, age, gender, phone, address, medicalHistory, email, password } = req.body;
 
     const patient = await Patient.create({
       name,
+      email,
+      password,
       age,
       gender,
       phone,
@@ -26,7 +28,7 @@ const createPatient = async (req, res) => {
 };
 
 // Get all patients
-const getPatients = async (req, res) => {
+export const getPatients = async (req, res) => {
   try {
     const patients = await Patient.find();
     return res.status(200).json({ success: true, patients });
@@ -37,7 +39,7 @@ const getPatients = async (req, res) => {
 };
 
 // Get single patient
-const getPatientById = async (req, res) => {
+export const getPatientById = async (req, res) => {
   try {
     const patient = await Patient.findById(req.params.id);
 
@@ -53,7 +55,7 @@ const getPatientById = async (req, res) => {
 };
 
 // Update patient
-const updatePatient = async (req, res) => {
+export const updatePatient = async (req, res) => {
   try {
     const updatedPatient = await Patient.findByIdAndUpdate(
       req.params.id,
@@ -77,7 +79,7 @@ const updatePatient = async (req, res) => {
 };
 
 // Delete patient
-const deletePatient = async (req, res) => {
+export const deletePatient = async (req, res) => {
   try {
     const deletedPatient = await Patient.findByIdAndDelete(req.params.id);
 
@@ -96,12 +98,4 @@ const deletePatient = async (req, res) => {
       message: "Failed to delete patient",
     });
   }
-};
-
-module.exports = {
-  createPatient,
-  getPatients,
-  getPatientById,
-  updatePatient,
-  deletePatient,
 };

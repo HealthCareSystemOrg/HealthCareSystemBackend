@@ -21,9 +21,9 @@ import recordRoutes from "./routes/recordRoutes.js";
 
 // Use Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/patients", patientRoutes);
-app.use("/api/doctors", doctorRoutes);
-app.use("/api/appointments", appointmentRoutes);
+app.use("/api", patientRoutes);
+app.use("/api", doctorRoutes);
+app.use("/api", appointmentRoutes);
 app.use("/api/departments", departmentRoutes);
 app.use("/api/prescriptions", prescriptionRoutes);
 app.use("/api/records", recordRoutes);
