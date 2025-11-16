@@ -1,14 +1,18 @@
-const express = require('express'); // Import Express(Gives access to Express's features, like creating routers and handling HTTP requests.)
-const router = express.Router();// Creates a new router instance using Express's Router middleware.This router will define specific paths for auth actions, which can later be mounted into the main Express app.
-const authController = require('../controllers/authController');// Import the authentication controller from the controllers directory. This controller contains the logic for handling registration, login, and logout operations.
+const express = require("express");
+const router = express.Router();
+const authController = require("../controllers/authController");
+const authMiddleware = require("../middleware/authMiddleware"); // Optional: for protecting routes like profile
 
-// Register a new user
-router.post('/register', authController.registerUser); // Handles POST requests to /register by invoking the registerUser method from the authController.
+// Register
+router.post("/register", authController.registerUser);
 
 // Login
-router.post('/login', authController.loginUser);// Handles POST requests to /login by invoking the loginUser method from the authController.
+router.post("/login", authController.loginUser);
 
-// Logout (optional)
-router.post('/logout', authController.logoutUser);// Handles POST requests to /logout by invoking the logoutUser method from the authController. This is optional and may not be implemented in all applications.
+// Logout
+router.post("/logout", authController.logoutUser);
+
+// Get profile (protected route)
+router.get("/profile", authMiddleware, authController.getProfile);
 
 module.exports = router;

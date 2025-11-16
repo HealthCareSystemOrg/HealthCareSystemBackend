@@ -79,4 +79,9 @@ const getProfile = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getProfile };
+// Logout user (dummy for JWT, client deletes token)
+const logoutUser = (req, res) => {
+  return res.status(200).json({ success: true, message: "Logged out successfully" });
+};
+
+module.exports = { registerUser, loginUser, getProfile, logoutUser };

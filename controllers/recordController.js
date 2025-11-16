@@ -1,4 +1,4 @@
-const { Record } = require("../models/Record");
+const { Record } = require("../models/MedicalRecord");
 
 // Create a new medical record
 const createRecord = async (req, res) => {
