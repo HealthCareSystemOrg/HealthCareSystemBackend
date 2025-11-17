@@ -1,7 +1,8 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const authController = require("../controllers/authController");
-const authMiddleware = require("../middleware/authMiddleware"); // Optional: for protecting routes like profile
+
+import * as authController from "../controllers/authController.js";
+import authMiddleware from "../middleware/authMiddleware.js"; // Optional: for protecting routes like profile
 
 // Register
 router.post("/register", authController.registerUser);
@@ -15,4 +16,4 @@ router.post("/logout", authController.logoutUser);
 // Get profile (protected route)
 router.get("/profile", authMiddleware, authController.getProfile);
 
-module.exports = router;
+export default router;

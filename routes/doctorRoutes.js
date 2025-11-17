@@ -1,6 +1,7 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const doctorController = require("../controllers/doctorController");
+
+import * as doctorController from "../controllers/doctorController.js"; // ES Module import
 
 // Create a new doctor
 router.post("/doctors", doctorController.createDoctor);
@@ -17,4 +18,4 @@ router.put("/doctors/:id", doctorController.updateDoctor);
 // Delete a doctor by ID
 router.delete("/doctors/:id", doctorController.deleteDoctor);
 
-module.exports = router;
+export default router; // ES Module export

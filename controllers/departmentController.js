@@ -1,11 +1,40 @@
-const { Department } = require("../models/Department");
+import Department from "../models/Department.js";
 
 // Create a new department
-const createDepartment = async (req, res) => {
+export const createDepartment = async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const {
+      name,
+      head,
+      location,
+      contactNumber,
+      servicesOffered,
+      operatingHours,
+    } = req.body;
 
-    const department = await Department.create({ name, description });
+    // Validate required fields
+    if (!name || !head || !location || !contactNumber || !servicesOffered || !operatingHours) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields (name, head, location, contactNumber, servicesOffered, operatingHours) are required",
+      });
+    }
+
+    if (!Array.isArray(servicesOffered)) {
+      return res.status(400).json({
+        success: false,
+        message: "servicesOffered must be an array of strings",
+      });
+    }
+
+    const department = await Department.create({
+      name,
+      head,
+      location,
+      contactNumber,
+      servicesOffered,
+      operatingHours,
+    });
 
     return res.status(201).json({
       success: true,
@@ -14,6 +43,14 @@ const createDepartment = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    // Check for duplicate key errors (unique fields)
+    if (error.code === 11000) {
+      const duplicateField = Object.keys(error.keyValue)[0];
+      return res.status(400).json({
+        success: false,
+        message: `${duplicateField} must be unique. '${error.keyValue[duplicateField]}' already exists.`,
+      });
+    }
     return res.status(500).json({
       success: false,
       message: "Failed to create department",
@@ -22,7 +59,7 @@ const createDepartment = async (req, res) => {
 };
 
 // Get all departments
-const getDepartments = async (req, res) => {
+export const getDepartments = async (req, res) => {
   try {
     const departments = await Department.find();
     return res.status(200).json({ success: true, departments });
@@ -36,12 +73,15 @@ const getDepartments = async (req, res) => {
 };
 
 // Get a single department by ID
-const getDepartmentById = async (req, res) => {
+export const getDepartmentById = async (req, res) => {
   try {
     const department = await Department.findById(req.params.id);
 
     if (!department) {
-      return res.status(404).json({ success: false, message: "Department not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Department not found",
+      });
     }
 
     return res.status(200).json({ success: true, department });
@@ -55,16 +95,19 @@ const getDepartmentById = async (req, res) => {
 };
 
 // Update a department
-const updateDepartment = async (req, res) => {
+export const updateDepartment = async (req, res) => {
   try {
     const updatedDepartment = await Department.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true }
+      { new: true, runValidators: true } // runValidators ensures schema rules are enforced
     );
 
     if (!updatedDepartment) {
-      return res.status(404).json({ success: false, message: "Department not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Department not found",
+      });
     }
 
     return res.status(200).json({
@@ -74,6 +117,14 @@ const updateDepartment = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    // Handle duplicate key error on update
+    if (error.code === 11000) {
+      const duplicateField = Object.keys(error.keyValue)[0];
+      return res.status(400).json({
+        success: false,
+        message: `${duplicateField} must be unique. '${error.keyValue[duplicateField]}' already exists.`,
+      });
+    }
     return res.status(500).json({
       success: false,
       message: "Failed to update department",
@@ -82,12 +133,15 @@ const updateDepartment = async (req, res) => {
 };
 
 // Delete a department
-const deleteDepartment = async (req, res) => {
+export const deleteDepartment = async (req, res) => {
   try {
     const deletedDepartment = await Department.findByIdAndDelete(req.params.id);
 
     if (!deletedDepartment) {
-      return res.status(404).json({ success: false, message: "Department not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Department not found",
+      });
     }
 
     return res.status(200).json({
@@ -101,12 +155,4 @@ const deleteDepartment = async (req, res) => {
       message: "Failed to delete department",
     });
   }
-};
-
-module.exports = {
-  createDepartment,
-  getDepartments,
-  getDepartmentById,
-  updateDepartment,
-  deleteDepartment,
 };

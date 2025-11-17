@@ -24,9 +24,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api", patientRoutes);
 app.use("/api", doctorRoutes);
 app.use("/api", appointmentRoutes);
-app.use("/api/departments", departmentRoutes);
-app.use("/api/prescriptions", prescriptionRoutes);
-app.use("/api/records", recordRoutes);
+app.use("/api", departmentRoutes);
+app.use("/api", prescriptionRoutes);
+app.use("/api", recordRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running...");

@@ -1,15 +1,26 @@
-const { Record } = require("../models/MedicalRecord");
+import MedicalRecord from "../models/MedicalRecord.js"; // ES Module import
+
 
 // Create a new medical record
-const createRecord = async (req, res) => {
+export const createRecord = async (req, res) => {
   try {
-    const { patientId, doctorId, diagnosis, treatment, notes } = req.body;
+    const { patientId, doctorId, diagnosis, treatment, prescriptions, visitDate, notes } = req.body;
 
-    const record = await Record.create({
+    // Make sure required fields are passed
+    if (!visitDate || !prescriptions) {
+      return res.status(400).json({
+        success: false,
+        message: "visitDate and prescriptions are required",
+      });
+    }
+
+    const record = await MedicalRecord.create({
       patientId,
       doctorId,
       diagnosis,
       treatment,
+      prescriptions, // required
+      visitDate,     // required
       notes,
     });
 
@@ -26,11 +37,10 @@ const createRecord = async (req, res) => {
     });
   }
 };
-
 // Get all medical records
-const getRecords = async (req, res) => {
+export const getRecords = async (req, res) => {
   try {
-    const records = await Record.find()
+    const records = await MedicalRecord.find()
       .populate("patientId", "name email")
       .populate("doctorId", "name email specialty");
 
@@ -45,9 +55,9 @@ const getRecords = async (req, res) => {
 };
 
 // Get a single medical record by ID
-const getRecordById = async (req, res) => {
+export const getRecordById = async (req, res) => {
   try {
-    const record = await Record.findById(req.params.id)
+    const record = await MedicalRecord.findById(req.params.id)
       .populate("patientId", "name email")
       .populate("doctorId", "name email specialty");
 
@@ -66,9 +76,9 @@ const getRecordById = async (req, res) => {
 };
 
 // Update a medical record
-const updateRecord = async (req, res) => {
+export const updateRecord = async (req, res) => {
   try {
-    const updatedRecord = await Record.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updatedRecord = await MedicalRecord.findByIdAndUpdate(req.params.id, req.body, { new: true });
 
     if (!updatedRecord) {
       return res.status(404).json({ success: false, message: "Medical record not found" });
@@ -89,9 +99,9 @@ const updateRecord = async (req, res) => {
 };
 
 // Delete a medical record
-const deleteRecord = async (req, res) => {
+export const deleteRecord = async (req, res) => {
   try {
-    const deletedRecord = await Record.findByIdAndDelete(req.params.id);
+    const deletedRecord = await MedicalRecord.findByIdAndDelete(req.params.id);
 
     if (!deletedRecord) {
       return res.status(404).json({ success: false, message: "Medical record not found" });
@@ -108,12 +118,4 @@ const deleteRecord = async (req, res) => {
       message: "Failed to delete medical record",
     });
   }
-};
-
-module.exports = {
-  createRecord,
-  getRecords,
-  getRecordById,
-  updateRecord,
-  deleteRecord,
 };

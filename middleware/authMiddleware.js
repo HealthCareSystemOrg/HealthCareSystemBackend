@@ -1,12 +1,13 @@
-// middleware/authMiddleware.js
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 
 const authMiddleware = (req, res, next) => {
   // Get token from header
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ success: false, message: "No token, authorization denied" });
+    return res
+      .status(401)
+      .json({ success: false, message: "No token, authorization denied" });
   }
 
   const token = authHeader.split(" ")[1];
@@ -28,4 +29,4 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-module.exports = authMiddleware;
+export default authMiddleware;

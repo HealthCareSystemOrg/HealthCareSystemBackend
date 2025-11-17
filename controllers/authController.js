@@ -1,9 +1,9 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { User } = require("../models/User");
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { User } from "../models/User.js"; // Make sure the file exports User in ES Module style
 
 // Register new user
-const registerUser = async (req, res) => {
+export const registerUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
@@ -31,7 +31,7 @@ const registerUser = async (req, res) => {
 };
 
 // Login user
-const loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -64,7 +64,7 @@ const loginUser = async (req, res) => {
 };
 
 // Get current user profile
-const getProfile = async (req, res) => {
+export const getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password"); // Exclude password
 
@@ -80,8 +80,6 @@ const getProfile = async (req, res) => {
 };
 
 // Logout user (dummy for JWT, client deletes token)
-const logoutUser = (req, res) => {
+export const logoutUser = (req, res) => {
   return res.status(200).json({ success: true, message: "Logged out successfully" });
 };
-
-module.exports = { registerUser, loginUser, getProfile, logoutUser };

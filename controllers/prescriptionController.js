@@ -1,7 +1,7 @@
-const { Prescription } = require("../models/Prescription");
+import Prescription from "../models/Prescription.js";
 
 // Create a new prescription
-const createPrescription = async (req, res) => {
+export const createPrescription = async (req, res) => {
   try {
     const { patientId, doctorId, medications, diagnosis, notes } = req.body;
 
@@ -11,6 +11,7 @@ const createPrescription = async (req, res) => {
       medications,
       diagnosis,
       notes,
+      // issuedDate will automatically use current date
     });
 
     return res.status(201).json({
@@ -23,12 +24,13 @@ const createPrescription = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to create prescription",
+      error: error.message,
     });
   }
 };
 
 // Get all prescriptions
-const getPrescriptions = async (req, res) => {
+export const getPrescriptions = async (req, res) => {
   try {
     const prescriptions = await Prescription.find()
       .populate("patientId", "name email")
@@ -45,7 +47,7 @@ const getPrescriptions = async (req, res) => {
 };
 
 // Get a single prescription by ID
-const getPrescriptionById = async (req, res) => {
+export const getPrescriptionById = async (req, res) => {
   try {
     const prescription = await Prescription.findById(req.params.id)
       .populate("patientId", "name email")
@@ -66,7 +68,7 @@ const getPrescriptionById = async (req, res) => {
 };
 
 // Update a prescription
-const updatePrescription = async (req, res) => {
+export const updatePrescription = async (req, res) => {
   try {
     const updatedPrescription = await Prescription.findByIdAndUpdate(
       req.params.id,
@@ -93,7 +95,7 @@ const updatePrescription = async (req, res) => {
 };
 
 // Delete a prescription
-const deletePrescription = async (req, res) => {
+export const deletePrescription = async (req, res) => {
   try {
     const deletedPrescription = await Prescription.findByIdAndDelete(req.params.id);
 
@@ -112,12 +114,4 @@ const deletePrescription = async (req, res) => {
       message: "Failed to delete prescription",
     });
   }
-};
-
-module.exports = {
-  createPrescription,
-  getPrescriptions,
-  getPrescriptionById,
-  updatePrescription,
-  deletePrescription,
 };
